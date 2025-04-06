@@ -15,6 +15,7 @@ const (
 	ConnectedUsers Command = 1
 	Message                = 2
 	CurrentUser            = 3
+	Disconnect             = 4
 )
 
 type WsMessage struct {
@@ -42,6 +43,10 @@ func handleWsConnection(conn net.Conn) {
 	defer func() {
 		conn.Close()
 		ReturnAvailableUser(currentUser)
+		broadcastUserMessage(currentUser, WsMessage{
+			Command: Disconnect,
+			Data:    currentUser,
+		})
 	}()
 
 	sendWsMessage(conn, WsMessage{
@@ -52,6 +57,10 @@ func handleWsConnection(conn net.Conn) {
 	sendWsMessage(conn, WsMessage{
 		Command: ConnectedUsers,
 		Data:    GetConnectedUsers(),
+	})
+	broadcastUserMessage(currentUser, WsMessage{
+		Command: ConnectedUsers,
+		Data:    []User{currentUser},
 	})
 
 	for {
@@ -69,7 +78,10 @@ func handleWsConnection(conn net.Conn) {
 			}
 
 			message.CurrentUser = currentUser
-			broadcastUserMessage(message)
+			broadcastUserMessage(currentUser, WsMessage{
+				Command: Message,
+				Data:    message,
+			})
 		}
 	}
 

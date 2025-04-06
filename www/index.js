@@ -20,7 +20,7 @@ function appendMessage(userMessage, outside) {
                                         alt=""/>
                             </div>
                         </div>
-                        <div class="chat-bubble bg-${outside ? 'gray' :'green'}-200">${message}</div>
+                        <div class="chat-bubble bg-${outside ? 'gray' : 'green'}-200">${message}</div>
                     </div>`;
     let temp = document.createElement('template');
     temp.innerHTML = message_template;
@@ -31,7 +31,7 @@ function appendMessage(userMessage, outside) {
 }
 
 function appendConnectedUser(user) {
-    const message_template = `<li class="list-row">
+    const message_template = `<li id="user_${user.id}" class="list-row">
                         <div><img class="size-10 rounded-box object-cover"
                                   src="${user.image}" alt=""/></div>
                         <div>
@@ -45,6 +45,10 @@ function appendConnectedUser(user) {
     const messages = document.getElementById("connectedUsers");
     messages.appendChild(temp.content.firstChild);
     messages.scrollTo(0, messages.scrollHeight);
+}
+
+function removeConnectedUser(user) {
+    document.getElementById("user_" + user.id).remove();
 }
 
 // -----------------------------------------------------------------------------------------
@@ -80,7 +84,11 @@ function handleWsMessage(data) {
             //current user
             currentUser = json_data.data;
             break;
-
+        case 4:
+            //disconnect user
+            let disconnectedUser = json_data.data;
+            removeConnectedUser(disconnectedUser);
+            break;
     }
 }
 

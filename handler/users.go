@@ -197,18 +197,14 @@ func GetConnectedUsers() []User {
 	return connectedUsers
 }
 
-func broadcastUserMessage(message UserMessage) {
+func broadcastUserMessage(user User, message WsMessage) {
 	for _, userSession := range users {
-		if userSession.user.Id == message.CurrentUser.Id {
+		if userSession.user.Id == user.Id {
 			continue
 		}
 
 		conn := userSession.conn
-		msg := WsMessage{
-			Command: 2,
-			Data:    message,
-		}
 
-		sendWsMessage(conn, msg)
+		sendWsMessage(conn, message)
 	}
 }
