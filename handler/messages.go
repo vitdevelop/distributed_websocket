@@ -5,8 +5,16 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"os"
 	"time"
 )
+
+var distributionType string
+
+func init() {
+	// "", "instance", "redis"
+	distributionType = os.Getenv("DISTRIBUTION_TYPE")
+}
 
 func broadcastUserMessage(user User, message WsMessage) {
 	for _, userSession := range users {
@@ -23,7 +31,12 @@ func broadcastUserMessage(user User, message WsMessage) {
 		return
 	}
 
-	sendInstanceMessage(message)
+	switch distributionType {
+	case "instance":
+		sendInstanceMessage(message)
+	case "redis":
+		sendRedisMessage(message)
+	}
 }
 
 type InstanceMessage struct {
