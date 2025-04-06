@@ -57,3 +57,24 @@ func handleRedisMessages() {
 		}
 	}
 }
+
+func GetRedisConnectedUsers() []User {
+	encodedUsers, err := redisClient.HGetAll(context.Background(), "users").Result()
+	if err != nil {
+		return []User{}
+	}
+
+	decodedUsers := make([]User, 0, len(encodedUsers))
+	for _, encodedUser := range encodedUsers {
+		user := User{}
+
+		err = json.Unmarshal([]byte(encodedUser), &user)
+		if err != nil {
+			slog.Error(err.Error())
+			continue
+		}
+
+		decodedUsers = append(decodedUsers, user)
+	}
+	return decodedUsers
+}

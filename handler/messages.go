@@ -9,11 +9,19 @@ import (
 	"time"
 )
 
-var distributionType string
+type DistributionType string
+
+var distributionType DistributionType
+
+const (
+	Local DistributionType = ""
+	Http                   = "http"
+	Redis                  = "redis"
+)
 
 func init() {
-	// "", "instance", "redis"
-	distributionType = os.Getenv("DISTRIBUTION_TYPE")
+	// "", "http", "redis"
+	distributionType = DistributionType(os.Getenv("DISTRIBUTION_TYPE"))
 }
 
 func broadcastUserMessage(user User, message WsMessage) {
@@ -32,9 +40,9 @@ func broadcastUserMessage(user User, message WsMessage) {
 	}
 
 	switch distributionType {
-	case "instance":
+	case Http:
 		sendInstanceMessage(message)
-	case "redis":
+	case Redis:
 		sendRedisMessage(message)
 	}
 }

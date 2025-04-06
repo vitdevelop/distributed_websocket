@@ -1,9 +1,15 @@
 package handler
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log/slog"
 	"net"
+	"net/http"
 	"os"
 	"sync"
+	"time"
 )
 
 type User struct {
@@ -195,13 +201,22 @@ func ConnectAvailableUser(conn net.Conn) User {
 	var user User
 	if len(names) == 0 {
 		user = User{
-			Id:    uint(len(users) + 1),
-			Name:  "Mistique",
-			Image: "/heroes/mystique.jpg",
+			Id:       uint(len(users) + 1),
+			Name:     "Mistique",
+			Image:    "/heroes/mystique.jpg",
+			Instance: instanceName,
 		}
 	} else {
 		user = names[len(names)-1]
 		names = names[:len(names)-1]
+	}
+
+	if distributionType == Redis {
+		userJson, err := json.Marshal(user)
+		if err != nil {
+			slog.Error(err.Error())
+		}
+		redisClient.HSet(context.Background(), "users", fmt.Sprintf("%s:%d", instanceName, user.Id), string(userJson))
 	}
 
 	users[user.Id] = UserSession{
@@ -218,9 +233,13 @@ func ReturnAvailableUser(user User) {
 
 	names = append(names, user)
 	delete(users, user.Id)
+
+	if distributionType == Redis {
+		redisClient.HDel(context.Background(), "users", fmt.Sprintf("%s:%d", instanceName, user.Id))
+	}
 }
 
-func GetConnectedUsers() []User {
+func GetLocalConnectedUsers() []User {
 	mutex.Lock()
 	defer mutex.Unlock()
 
@@ -230,4 +249,76 @@ func GetConnectedUsers() []User {
 	}
 
 	return connectedUsers
+}
+
+func GetConnectedUsers() []User {
+	var remoteUsers []User
+
+	switch distributionType {
+	case Http:
+		remoteUsers = GetHttpConnectedUsers()
+	case Redis:
+		return GetRedisConnectedUsers()
+	default:
+		return GetLocalConnectedUsers()
+	}
+
+	remoteUsers = append(remoteUsers, GetLocalConnectedUsers()...)
+	return remoteUsers
+}
+
+type InstanceUsers struct {
+	InstanceName string `json:"instanceName"`
+	Users        []User `json:"users"`
+}
+
+func HandleInstanceConnectedUsers(w http.ResponseWriter, r *http.Request) {
+	connectedUsers := GetLocalConnectedUsers()
+
+	jsonData, err := json.Marshal(InstanceUsers{
+		InstanceName: instanceName,
+		Users:        connectedUsers,
+	})
+	if err != nil {
+		slog.Error(err.Error())
+		return
+	}
+
+	w.WriteHeader(200)
+	_, err = w.Write(jsonData)
+	if err != nil {
+		slog.Error(err.Error())
+	}
+}
+
+func GetHttpConnectedUsers() []User {
+	var empty []User
+	req, err := http.NewRequest(http.MethodGet, "http://127.0.0.1:8080/distributed/users", nil)
+	if err != nil {
+		slog.Error(err.Error())
+		return empty
+	}
+
+	client := http.Client{
+		Timeout: 4 * time.Second,
+	}
+
+	response, err := client.Do(req)
+	if err != nil {
+		slog.Error(err.Error())
+		return empty
+	}
+
+	instanceUsers := InstanceUsers{}
+	err = json.NewDecoder(response.Body).Decode(&instanceUsers)
+	if err != nil {
+		slog.Error(err.Error())
+		return empty
+	}
+
+	if instanceName == instanceUsers.InstanceName {
+		return empty
+	}
+
+	return instanceUsers.Users
 }
