@@ -1,7 +1,30 @@
 services:
   redis:
+    network_mode: "host"
     image: bitnami/redis
-    ports:
-      - "6379:6379"
     environment:
       ALLOW_EMPTY_PASSWORD: yes
+
+  earth:
+    network_mode: "host"
+    image: vitdevelop/distributed_websocket:latest
+    environment:
+      DISTRIBUTION_TYPE: redis #http, ""
+      REDIS_URL: 127.0.0.1:6379
+      INSTANCE_NAME: Earth
+
+  helicarrier:
+    network_mode: "host"
+    image: vitdevelop/distributed_websocket:latest
+    environment:
+      DISTRIBUTION_TYPE: redis #http, ""
+      REDIS_URL: 127.0.0.1:6379
+      INSTANCE_NAME: Helicarrier
+
+  asgard:
+    network_mode: "host"
+    image: vitdevelop/distributed_websocket:latest
+    environment:
+      DISTRIBUTION_TYPE: redis #http, ""
+      REDIS_URL: 127.0.0.1:6379
+      INSTANCE_NAME: Asgard

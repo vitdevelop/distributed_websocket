@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"distributed_websocket/handler"
+	"distributedwebsocket/handler"
 	"golang.org/x/sys/unix"
 	"log"
 	"net"
