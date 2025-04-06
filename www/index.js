@@ -11,7 +11,7 @@ function appendMessage(userMessage, outside) {
     const message_template = `<div class="chat chat-${outside ? 'start' : 'end'} m-2">
                         <div class="chat-header">
                             <div>${user.name}</div>
-                            <div class="text-xs uppercase font-semibold opacity-60">Asgard</div>
+                            <div class="text-xs uppercase font-semibold opacity-60">${user.instance}</div>
                         </div>
                         <div class="chat-image avatar">
                             <div class="w-10 rounded-full">
@@ -36,7 +36,7 @@ function appendConnectedUser(user) {
                                   src="${user.image}" alt=""/></div>
                         <div>
                             <div>${user.name}</div>
-                            <div class="text-xs uppercase font-semibold opacity-60">Asgard</div>
+                            <div class="text-xs uppercase font-semibold opacity-60">${user.instance}</div>
                         </div>
                     </li>`;
     let temp = document.createElement('template');

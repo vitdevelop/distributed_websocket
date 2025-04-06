@@ -2,13 +2,15 @@ package handler
 
 import (
 	"net"
+	"os"
 	"sync"
 )
 
 type User struct {
-	Id    uint   `json:"id,omitempty"`
-	Name  string `json:"name,omitempty"`
-	Image string `json:"image,omitempty"`
+	Id       uint   `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Image    string `json:"image,omitempty"`
+	Instance string `json:"instance"`
 }
 
 type UserSession struct {
@@ -19,137 +21,170 @@ type UserSession struct {
 var names []User
 var users = make(map[uint]UserSession)
 var mutex sync.Mutex
+var instanceName string
 
 func init() {
+	name := os.Getenv("INSTANCE_NAME")
+	if name == "" {
+		name = "Helicarrier"
+	}
+	instanceName = name
+
 	names = append(names, User{
-		Id:    1,
-		Name:  "Black Widow",
-		Image: "/heroes/black_widow.jpg",
+		Id:       1,
+		Name:     "Black Widow",
+		Image:    "/heroes/black_widow.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    2,
-		Name:  "Captain America",
-		Image: "/heroes/captain_america.jpg",
+		Id:       2,
+		Name:     "Captain America",
+		Image:    "/heroes/captain_america.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    3,
-		Name:  "Cyclop",
-		Image: "/heroes/cyclop.jpg",
+		Id:       3,
+		Name:     "Cyclop",
+		Image:    "/heroes/cyclop.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    4,
-		Name:  "Daredevil",
-		Image: "/heroes/daredevil.png",
+		Id:       4,
+		Name:     "Daredevil",
+		Image:    "/heroes/daredevil.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    5,
-		Name:  "Deadpool",
-		Image: "/heroes/deadpool.png",
+		Id:       5,
+		Name:     "Deadpool",
+		Image:    "/heroes/deadpool.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    6,
-		Name:  "Doctor Strange",
-		Image: "/heroes/doctor_strange.jpg",
+		Id:       6,
+		Name:     "Doctor Strange",
+		Image:    "/heroes/doctor_strange.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    7,
-		Name:  "Drax",
-		Image: "/heroes/drax.png",
+		Id:       7,
+		Name:     "Drax",
+		Image:    "/heroes/drax.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    8,
-		Name:  "Gamora",
-		Image: "/heroes/gamora.jpg",
+		Id:       8,
+		Name:     "Gamora",
+		Image:    "/heroes/gamora.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    9,
-		Name:  "Ghost Rider",
-		Image: "/heroes/ghost_rider.jpg",
+		Id:       9,
+		Name:     "Ghost Rider",
+		Image:    "/heroes/ghost_rider.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    10,
-		Name:  "Groot",
-		Image: "/heroes/groot.png",
+		Id:       10,
+		Name:     "Groot",
+		Image:    "/heroes/groot.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    11,
-		Name:  "Hawkeye",
-		Image: "/heroes/hawkeye.png",
+		Id:       11,
+		Name:     "Hawkeye",
+		Image:    "/heroes/hawkeye.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    12,
-		Name:  "Heimdall",
-		Image: "/heroes/heimdall.jpg",
+		Id:       12,
+		Name:     "Heimdall",
+		Image:    "/heroes/heimdall.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    13,
-		Name:  "Hulk",
-		Image: "/heroes/hulk.png",
+		Id:       13,
+		Name:     "Hulk",
+		Image:    "/heroes/hulk.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    14,
-		Name:  "Iceman",
-		Image: "/heroes/iceman.jpg",
+		Id:       14,
+		Name:     "Iceman",
+		Image:    "/heroes/iceman.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    15,
-		Name:  "Iron Man",
-		Image: "/heroes/iron_man.jpg",
+		Id:       15,
+		Name:     "Iron Man",
+		Image:    "/heroes/iron_man.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    16,
-		Name:  "Jean Grey",
-		Image: "/heroes/jean_grey.jpg",
+		Id:       16,
+		Name:     "Jean Grey",
+		Image:    "/heroes/jean_grey.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    17,
-		Name:  "Nick Fury",
-		Image: "/heroes/nick_fury.png",
+		Id:       17,
+		Name:     "Nick Fury",
+		Image:    "/heroes/nick_fury.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    18,
-		Name:  "Professor X",
-		Image: "/heroes/professor_x.jpg",
+		Id:       18,
+		Name:     "Professor X",
+		Image:    "/heroes/professor_x.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    19,
-		Name:  "Rocket",
-		Image: "/heroes/rocket.png",
+		Id:       19,
+		Name:     "Rocket",
+		Image:    "/heroes/rocket.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    20,
-		Name:  "Rogue",
-		Image: "/heroes/rogue.png",
+		Id:       20,
+		Name:     "Rogue",
+		Image:    "/heroes/rogue.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    21,
-		Name:  "Spiderman",
-		Image: "/heroes/spiderman.png",
+		Id:       21,
+		Name:     "Spiderman",
+		Image:    "/heroes/spiderman.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    22,
-		Name:  "Star Lord",
-		Image: "/heroes/star_lord.jpg",
+		Id:       22,
+		Name:     "Star Lord",
+		Image:    "/heroes/star_lord.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    23,
-		Name:  "Storm",
-		Image: "/heroes/storm.png",
+		Id:       23,
+		Name:     "Storm",
+		Image:    "/heroes/storm.png",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    24,
-		Name:  "Thor",
-		Image: "/heroes/thor.jpg",
+		Id:       24,
+		Name:     "Thor",
+		Image:    "/heroes/thor.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    25,
-		Name:  "Vision",
-		Image: "/heroes/vision.jpg",
+		Id:       25,
+		Name:     "Vision",
+		Image:    "/heroes/vision.jpg",
+		Instance: instanceName,
 	})
 	names = append(names, User{
-		Id:    26,
-		Name:  "Wolverine",
-		Image: "/heroes/wolverine.jpg",
+		Id:       26,
+		Name:     "Wolverine",
+		Image:    "/heroes/wolverine.jpg",
+		Instance: instanceName,
 	})
 }
 
@@ -195,16 +230,4 @@ func GetConnectedUsers() []User {
 	}
 
 	return connectedUsers
-}
-
-func broadcastUserMessage(user User, message WsMessage) {
-	for _, userSession := range users {
-		if userSession.user.Id == user.Id {
-			continue
-		}
-
-		conn := userSession.conn
-
-		sendWsMessage(conn, message)
-	}
 }

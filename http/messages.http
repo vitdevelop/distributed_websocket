@@ -1,0 +1,39 @@
+###
+POST http://127.0.0.1:8080/distributed/messages
+Content-Type: application/json
+
+{
+  "instanceName" : "Earth",
+  "message" : {
+    "command" : 2,
+    "data" : {
+      "user" : {
+        "id" : 26,
+        "name" : "Wolverine",
+        "image" : "/heroes/wolverine.jpg",
+        "instance" : "Earth"
+      },
+      "message" : "asdasd"
+    }
+  }
+}
+
+###
+POST http://127.0.0.1:8080/distributed/messages
+Content-Type: application/json
+
+{
+  "instanceName": "Earth",
+  "message": {
+    "command": 1,
+    "data": [
+      {
+        "id": 26,
+        "name": "Wolverine",
+        "image": "/heroes/wolverine.jpg",
+        "instance": "Earth"
+      }
+    ]
+  }
+}
+###

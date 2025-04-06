@@ -17,6 +17,7 @@ func main() {
 	http.Handle("/{filename}", http.FileServer(http.Dir("./www")))
 	http.Handle("/heroes/{filename}", http.FileServer(http.Dir("./www")))
 	http.HandleFunc("/ws", handler.HandleWs)
+	http.HandleFunc("POST /distributed/messages", handler.HandleInstanceMessage)
 
 	log.Fatal(http.Serve(ln, nil))
 }
